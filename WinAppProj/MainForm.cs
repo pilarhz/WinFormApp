@@ -8,16 +8,9 @@ namespace WinAppProj
     {
         public MainForm()
         {
-            this.Text = "Moja aplikacja";
-            this.Size = new Size(400, 300);
+            this.Text = "Windows application test";
+            this.Size = new Size(800, 600);
 
-            Button btn = new Button();
-            btn.Text = "Kliknij";
-            btn.Location = new Point(150, 120);
-
-            btn.Click += (s, e) => MessageBox.Show("Działa!");
-
-            this.Controls.Add(btn);
         }
     }
 }
