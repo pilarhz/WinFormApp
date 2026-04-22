@@ -14,13 +14,15 @@ namespace WinAppProj
             this.Size = new Size(900, 600);
             this.CenterToScreen();
 
+            // Body
+            Body body = new Body();
+            body.Dock = DockStyle.Fill;
+            this.Controls.Add(body);
+
             // Menu panel
             MenuPanel menuPanel = new MenuPanel();
             menuPanel.Dock = DockStyle.Top;
             this.Controls.Add(menuPanel);
-
-            // Body
-
         }
     }
 }
