@@ -8,9 +8,11 @@ namespace WinAppProj
     {
         public MainForm()
         {
+            // GUI
             this.Text = "Windows application test";
-            this.Size = new Size(800, 600);
+            this.Size = new Size(900, 600);
 
+            this.CenterToScreen();
         }
     }
 }
