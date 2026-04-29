@@ -9,20 +9,30 @@ namespace WinAppProj
     {
         public MainForm()
         {
-            // Setting window
+            // Set window
             this.Text = "Windows application test";
-            this.Size = new Size(900, 600);
+            this.Size = new Size(900, 630);//900x600
             this.CenterToScreen();
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
 
-            // Body
+            // Layout
+            TableLayoutPanel layout = new TableLayoutPanel();
+            layout.Dock = DockStyle.Fill;
+            layout.RowCount = 2;
+            layout.ColumnCount = 1;
+
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+
+            // Create menu and body
             Body body = new Body();
-            body.Dock = DockStyle.Fill;
-            this.Controls.Add(body);
-
-            // Menu panel
             MenuPanel menuPanel = new MenuPanel();
-            menuPanel.Dock = DockStyle.Top;
-            this.Controls.Add(menuPanel);
+
+            // Add layout
+            layout.Controls.Add(menuPanel, 0, 0);
+            layout.Controls.Add(body, 0, 1);
+            this.Controls.Add(layout);
         }
     }
 }
