@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Drawing;
-using System.Text.Json.Serialization;
 using System.Windows.Forms;
 
 namespace WinAppProj
 {
-    public class Body : UserControl
+    public partial class BodyUI : UserControl
     {
-        public Body()
+        private TextBox inputNumber = new TextBox();
+        private NumericUpDown columnNumber = new NumericUpDown();
+        private NumericUpDown rowNumber = new NumericUpDown();
+        private TableLayoutPanel matrixTable = new TableLayoutPanel();
+        private TextBox historyBox = new TextBox();
+
+        public BodyUI()
         {
             this.Dock = DockStyle.Fill;
             this.AutoSize = true;
@@ -27,6 +32,7 @@ namespace WinAppProj
 
             this.Controls.Add(layout);
         }
+
         Control CreateFirstRow()
         {
             FlowLayoutPanel panel = new FlowLayoutPanel();
@@ -37,35 +43,36 @@ namespace WinAppProj
             // Number
             Label textInput = new Label();
             textInput.Text = "Wprowadź liczbę";
-            TextBox input = new TextBox();
-            input.Width = 150;
+            inputNumber.Width = 150;
 
             // Row
             Label textRow = new Label();
             textRow.Text = "Numer wiersza";
-            NumericUpDown row = new NumericUpDown();
+            rowNumber.Minimum = 1;
+            rowNumber.Maximum = 5;
 
             // Column
             Label textColumn = new Label();
             textColumn.Text = "Numer kolumny";
-            NumericUpDown column = new NumericUpDown();
+            columnNumber.Minimum = 1;
+            columnNumber.Maximum = 5;
 
             // Add
             panel.Controls.Add(textInput);
-            panel.Controls.Add(input);
+            panel.Controls.Add(inputNumber);
             panel.Controls.Add(textRow);
-            panel.Controls.Add(row);
+            panel.Controls.Add(rowNumber);
             panel.Controls.Add(textColumn);
-            panel.Controls.Add(column);
+            panel.Controls.Add(columnNumber);
 
             foreach (Control ctrl in panel.Controls)
             {
                 ctrl.Margin = new Padding(0, 30, 0, 30);
             }
+
             textInput.Margin = new Padding(37, 33, 0, 30);
             textRow.Margin = new Padding(37, 33, 0, 30);
             textColumn.Margin = new Padding(37, 33, 0, 30);
-            this.Controls.Add(panel);
 
             return panel;
         }
@@ -77,10 +84,9 @@ namespace WinAppProj
             secondRowContainer.AutoSize = true;
 
             // Table
-            TableLayoutPanel table = new TableLayoutPanel();
-            table.RowCount = 6;
-            table.ColumnCount = 5;
-            table.AutoSize = true;
+            matrixTable.RowCount = 6;
+            matrixTable.ColumnCount = 5;
+            matrixTable.AutoSize = true;
 
             TextBox CreateTextBox(string text, Color color)
             {
@@ -94,16 +100,17 @@ namespace WinAppProj
                 };
             }
 
-            table.Controls.Add(CreateTextBox("1", Color.LightGray), 0, 0);
-            table.Controls.Add(CreateTextBox("2", Color.LightGray), 1, 0);
-            table.Controls.Add(CreateTextBox("3", Color.LightGray), 2, 0);
-            table.Controls.Add(CreateTextBox("4", Color.LightGray), 3, 0);
-            table.Controls.Add(CreateTextBox("5", Color.LightGray), 4, 0);
-            for (int i = 1; i < 5; i++)
+            matrixTable.Controls.Add(CreateTextBox("1", Color.LightGray), 0, 0);
+            matrixTable.Controls.Add(CreateTextBox("2", Color.LightGray), 1, 0);
+            matrixTable.Controls.Add(CreateTextBox("3", Color.LightGray), 2, 0);
+            matrixTable.Controls.Add(CreateTextBox("4", Color.LightGray), 3, 0);
+            matrixTable.Controls.Add(CreateTextBox("5", Color.LightGray), 4, 0);
+
+            for (int i = 1; i < 6; i++)
             {
                 for (int j = 0; j < 5; j++)
                 {
-                    table.Controls.Add(CreateTextBox("0", Color.White), j, i);
+                    matrixTable.Controls.Add(CreateTextBox("0", Color.White), j, i);
                 }
             }
 
@@ -112,7 +119,6 @@ namespace WinAppProj
             buttonPanel.FlowDirection = FlowDirection.TopDown;
             buttonPanel.AutoSize = true;
 
-            // Add
             Button CreateButton(string text, Image image)
             {
                 return new Button
@@ -124,13 +130,27 @@ namespace WinAppProj
                     Size = new Size(120, 30)
                 };
             }
-            buttonPanel.Controls.Add(CreateButton("Dodaj", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\add.png")));
-            buttonPanel.Controls.Add(CreateButton("Wyzeruj", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\empty.png")));
-            buttonPanel.Controls.Add(CreateButton("Wypełnij", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\fill.png")));
-            buttonPanel.Controls.Add(CreateButton("Zapisz", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\save.jpg")));
 
-            table.Margin = new Padding(80, 3, 60, 0);
-            secondRowContainer.Controls.Add(table);
+            Button addButton = CreateButton("Dodaj", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\add.png"));
+            addButton.Margin = new Padding(3, 15, 0, 0);
+            addButton.Click += AddNumberToMatrix;
+            buttonPanel.Controls.Add(addButton);
+
+            Button clearButton = CreateButton("Wyzeruj", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\empty.png"));
+            clearButton.Click += ClearMatrix;
+            buttonPanel.Controls.Add(clearButton);
+
+            Button fillButton = CreateButton("Wypełnij", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\fill.png"));
+            fillButton.Click += FillMatrix;
+            buttonPanel.Controls.Add(fillButton);
+
+            buttonPanel.Controls.Add(
+                CreateButton("Zapisz", Image.FromFile("..\\\\..\\\\..\\\\icons\\\\save.png"))
+            );
+
+            matrixTable.Margin = new Padding(80, 0, 60, 0);
+
+            secondRowContainer.Controls.Add(matrixTable);
             secondRowContainer.Controls.Add(buttonPanel);
 
             return secondRowContainer;
@@ -147,18 +167,26 @@ namespace WinAppProj
             label.Margin = new Padding(100, 7, 0, 0);
             label.Size = new Size(65, 20);
 
-            // Choose menu
+            // ComboBox
             ComboBox comboBox = new ComboBox();
             comboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+
             comboBox.Items.Add("Wybierz operacje");
             comboBox.Items.Add("Suma");
             comboBox.Items.Add("Min");
             comboBox.Items.Add("Max");
+
             comboBox.SelectedIndex = 0;
 
             // Button
             Button button = new Button();
             button.Text = "Oblicz";
+
+            Image btnImage = Image.FromFile("..\\..\\..\\icons\\solve.png");
+
+            button.ImageAlign = ContentAlignment.MiddleLeft;
+            button.TextAlign = ContentAlignment.MiddleRight;
+            button.Image = new Bitmap(btnImage, new Size(20, 20));
             button.Size = new Size(100, 30);
             button.Margin = new Padding(10, 0, 0, 0);
 
@@ -169,15 +197,15 @@ namespace WinAppProj
                 switch (wybor)
                 {
                     case "Suma":
-                        MessageBox.Show("Wykonuję sumę");
+                        SumMatrix(s, e);
                         break;
 
                     case "Min":
-                        MessageBox.Show("Szukam minimum");
+                        MinMatrix(s, e);
                         break;
 
                     case "Max":
-                        MessageBox.Show("Szukam maksimum");
+                        MaxMatrix(s, e);
                         break;
 
                     default:
@@ -204,15 +232,15 @@ namespace WinAppProj
             label.Margin = new Padding(370, 0, 0, 0);
 
             // TextBox
-            TextBox textBox = new TextBox();
-            textBox.Multiline = true;
-            textBox.ReadOnly = true;
-            textBox.BackColor = Color.White;
-            textBox.Size = new Size(800, 150);
-            textBox.Margin = new Padding(35, 0, 0, 0);
+            historyBox.Multiline = true;
+            historyBox.ReadOnly = true;
+            historyBox.BackColor = Color.White;
+            historyBox.ScrollBars = ScrollBars.Vertical;
+            historyBox.Size = new Size(800, 120);
+            historyBox.Margin = new Padding(35, 0, 0, 0);
 
             panel.Controls.Add(label);
-            panel.Controls.Add(textBox);
+            panel.Controls.Add(historyBox);
 
             return panel;
         }
@@ -235,6 +263,7 @@ namespace WinAppProj
             textBoxLeft.Text = "Start aplikacji";
             textBoxLeft.BackColor = Color.White;
             textBoxLeft.Width = 375;
+            textBoxLeft.ReadOnly = true;
 
             // Label 2
             Label labelRight = new Label();
@@ -247,6 +276,7 @@ namespace WinAppProj
             textBoxRight.Text = "ON";
             textBoxRight.BackColor = Color.White;
             textBoxRight.Width = 375;
+            textBoxRight.ReadOnly = true;
 
             panel.Controls.Add(labelLeft);
             panel.Controls.Add(textBoxLeft);
