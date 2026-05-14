@@ -37,7 +37,6 @@ namespace WinAppProj
 
             ToolStripMenuItem createNew = new ToolStripMenuItem("Nowy");
             ToolStripMenuItem open = new ToolStripMenuItem("Otwórz");
-            ToolStripMenuItem openSource = new ToolStripMenuItem("Otwórz plik źródłowy");
             ToolStripMenuItem save = new ToolStripMenuItem("Zapisz");
             ToolStripMenuItem saveAs = new ToolStripMenuItem("Zapisz jako");
 
@@ -46,7 +45,6 @@ namespace WinAppProj
 
             file.DropDownItems.Add(createNew);
             file.DropDownItems.Add(open);
-            file.DropDownItems.Add(openSource);
             file.DropDownItems.Add(save);
             file.DropDownItems.Add(saveAs);
             file.DropDownItems.Add(end);

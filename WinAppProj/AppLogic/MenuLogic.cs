@@ -5,6 +5,18 @@ namespace WinAppProj
 {
     public partial class MenuUI
     {
+        private void OpenFile(Object? sender, EventArgs e)
+        {
+
+        }
+        private void SaveFile(Object? sender, EventArgs e)
+        {
+
+        }
+        private void SaveFileAs(Object? sender, EventArgs e)
+        {
+
+        }
         private void CloseWindow(Object? sender, EventArgs e)
         {
             Application.Exit();
