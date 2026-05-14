@@ -36,10 +36,13 @@ namespace WinAppProj
             ToolStripMenuItem file = new ToolStripMenuItem("Plik");
 
             ToolStripMenuItem createNew = new ToolStripMenuItem("Nowy");
+            createNew.Click += NewFile;
             ToolStripMenuItem open = new ToolStripMenuItem("Otwórz");
+            open.Click += OpenFile;
             ToolStripMenuItem save = new ToolStripMenuItem("Zapisz");
+            save.Click += SaveFile;
             ToolStripMenuItem saveAs = new ToolStripMenuItem("Zapisz jako");
-
+            saveAs.Click += SaveFileAs;
             ToolStripMenuItem end = new ToolStripMenuItem("Zakończ");
             end.Click += CloseWindow;
 

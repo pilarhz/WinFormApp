@@ -9,8 +9,9 @@ namespace WinAppProj
         private TextBox inputNumber = new TextBox();
         private NumericUpDown columnNumber = new NumericUpDown();
         private NumericUpDown rowNumber = new NumericUpDown();
-        private TableLayoutPanel matrixTable = new TableLayoutPanel();
         private TextBox historyBox = new TextBox();
+
+        public TableLayoutPanel matrixTable = new TableLayoutPanel();
 
         public BodyUI()
         {
